@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import './index.css';
+import { Header } from "./components/header";
+import { Footer } from "./components/footer";
+import { ColumnDef } from "@tanstack/react-table";
+import { MoviesTable } from "./components/moviesTable";
 
 interface Movie {
   tconst: string;
@@ -36,7 +40,7 @@ const App: React.FC = () => {
   useEffect(() => {
     // Fetch movies
     axios.get("http://127.0.0.1:8000/api/movies/").then((response) => {
-      setMovies(response.data);
+      setMovies(response.data.results);
     });
     // Fetch names
     axios.get("http://127.0.0.1:8000/api/names/").then((response) => {
@@ -61,6 +65,13 @@ const App: React.FC = () => {
     return actor ? actor.name : "Unknown Actor";
   };
 
+  const movieColumns: ColumnDef<Movie>[] = [
+    { accessorKey: 'title', header: 'Title' },
+    { accessorKey: 'year', header: 'Year' },
+    { accessorKey: 'genre', header: "Genre" },
+  ]
+
+
   return (
     <div className="flex flex-col h-screen">
       <Header>
@@ -68,42 +79,32 @@ const App: React.FC = () => {
         <Header.Nav />
       </Header>
       <h1 className="text-2xl font-bold mb-4"></h1>
-      
-      <div className="grid grid-cols-2 gap-4 overflow-auto h-full">
-      {/* Movie List */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold">Movies</h2>
-        <ul className="list-disc pl-6">
-          {movies.map((movie) => (
-            <li
-              key={movie.tconst}
-              className="cursor-pointer text-blue-500"
-              onClick={() => setSelectedMovie(movie.tconst)}
-            >
-              {movie.title} ({movie.year}) - {movie.genre}
-            </li>
-          ))}
-        </ul>
-      </div>
 
-      {/* Principals and Actors */}
-      {selectedMovie && (
-        <div>
-          <h2 className="text-lg font-semibold">
-            Principals for {movies.find((m) => m.tconst === selectedMovie)?.title}
-          </h2>
-          <ul className="list-disc pl-6">
-            {principals.map((principal) => (
-              <li key={principal.id}>
-                <strong>{getActorName(principal.nconst)}</strong> - {principal.category}
-                {principal.characters && (
-                  <span> as {principal.characters.join(", ")}</span>
-                )}
-              </li>
-            ))}
-          </ul>
+      <div className="grid grid-cols-2 gap-4 overflow-auto h-full">
+        {/* Movie List */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold">Movies</h2>
+          <MoviesTable columns={movieColumns} data={movies}/>
         </div>
-      )}
+
+        {/* Principals and Actors */}
+        {selectedMovie && (
+          <div>
+            <h2 className="text-lg font-semibold">
+              Principals for {movies.find((m) => m.tconst === selectedMovie)?.title}
+            </h2>
+            <ul className="list-disc pl-6">
+              {principals.map((principal) => (
+                <li key={principal.id}>
+                  <strong>{getActorName(principal.nconst)}</strong> - {principal.category}
+                  {principal.characters && (
+                    <span> as {principal.characters.join(", ")}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
       <Footer />
     </div>
