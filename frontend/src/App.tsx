@@ -62,10 +62,14 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">🎬 Movie Explorer</h1>
+    <div className="flex flex-col h-screen">
+      <Header>
+        <Header.Title>🎬 Movie Explorer</Header.Title>
+        <Header.Nav />
+      </Header>
+      <h1 className="text-2xl font-bold mb-4"></h1>
       
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 overflow-auto h-full">
       {/* Movie List */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold">Movies</h2>
@@ -101,6 +105,7 @@ const App: React.FC = () => {
         </div>
       )}
       </div>
+      <Footer />
     </div>
   );
 };
