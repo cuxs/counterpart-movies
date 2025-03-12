@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import './index.css';
-import { Header } from "./components/header";
+import React, { useEffect, useState } from "react";
 import { Footer } from "./components/footer";
-import { ColumnDef } from "@tanstack/react-table";
+import { Header } from "./components/header";
 import { MoviesTable } from "./components/moviesTable";
+import './index.css';
 
-interface Movie {
+export interface Movie {
   tconst: string;
   title: string;
   original_title: string;
@@ -32,16 +31,11 @@ interface Name {
 }
 
 const App: React.FC = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
   const [principals, setPrincipals] = useState<Principal[]>([]);
   const [names, setNames] = useState<Name[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch movies
-    axios.get("http://127.0.0.1:8000/api/movies/").then((response) => {
-      setMovies(response.data.results);
-    });
     // Fetch names
     axios.get("http://127.0.0.1:8000/api/names/").then((response) => {
       setNames(response.data);
@@ -65,11 +59,7 @@ const App: React.FC = () => {
     return actor ? actor.name : "Unknown Actor";
   };
 
-  const movieColumns: ColumnDef<Movie>[] = [
-    { accessorKey: 'title', header: 'Title' },
-    { accessorKey: 'year', header: 'Year' },
-    { accessorKey: 'genre', header: "Genre" },
-  ]
+
 
 
   return (
@@ -84,16 +74,16 @@ const App: React.FC = () => {
         {/* Movie List */}
         <div className="mb-6">
           <h2 className="text-lg font-semibold">Movies</h2>
-          <MoviesTable columns={movieColumns} data={movies}/>
+          <MoviesTable/>
         </div>
 
         {/* Principals and Actors */}
         {selectedMovie && (
           <div>
             <h2 className="text-lg font-semibold">
-              Principals for {movies.find((m) => m.tconst === selectedMovie)?.title}
+              {/* Principals for {movieData?.results.find((m) => m.tconst === selectedMovie)?.title} */}
             </h2>
-            <ul className="list-disc pl-6">
+            {/* <ul className="list-disc pl-6">
               {principals.map((principal) => (
                 <li key={principal.id}>
                   <strong>{getActorName(principal.nconst)}</strong> - {principal.category}
@@ -102,7 +92,7 @@ const App: React.FC = () => {
                   )}
                 </li>
               ))}
-            </ul>
+            </ul> */}
           </div>
         )}
       </div>
